@@ -1,4 +1,4 @@
-/* Worktree Sessions sidebar. Colors come from the VS Code theme; the few fixed accents have theme-aware fallbacks. */
+/* Overstory sidebar. Colors come from the VS Code theme; the few fixed accents have theme-aware fallbacks. */
 :root {
   --fg: var(--vscode-sideBar-foreground, var(--vscode-foreground));
   --dim: var(--vscode-descriptionForeground);
@@ -121,4 +121,5 @@ code { font-family: var(--mono); font-size: 11px; overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 .banner .link { font-size: 12px; }
 .empty-act { margin-top: 10px; }
-.new.add-project { padding: 8px 12px 12px 26px; border-top: 1px solid var(--line); margin-top: 4px; }
+.new.add-project { padding: 8px 12px 4px 26px; border-top: 1px solid var(--line); margin-top: 4px; }
+.new.preserve { padding: 4px 12px 12px 26px; }

@@ -38,7 +38,7 @@ export async function ensureAnchorFolder(globalStorage: vscode.Uri): Promise<vsc
   await vscode.workspace.fs.createDirectory(dir);
   await vscode.workspace.fs.writeFile(
     vscode.Uri.joinPath(dir, "README.md"),
-    Buffer.from("Placeholder first folder added by Worktree Sessions.\n\nVS Code restarts extensions when a workspace's first folder changes; keeping this folder first means switching worktrees never does that. It's safe to remove from the workspace.\n"),
+    Buffer.from("Placeholder first folder added by Overstory.\n\nVS Code restarts extensions when a workspace's first folder changes; keeping this folder first means switching worktrees never does that. It's safe to remove from the workspace.\n"),
   );
   return dir;
 }

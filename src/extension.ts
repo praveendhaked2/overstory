@@ -134,7 +134,7 @@ class Controller implements vscode.Disposable {
     const cached = ctx.workspaceState.get<UiState>(UI_CACHE_STATE);
     if (cached) this.provider.setState({ ...cached, banner: undefined });
     this.status = vscode.window.createStatusBarItem("worktreeSessions.status", vscode.StatusBarAlignment.Left, 50);
-    this.status.name = "Worktree Sessions";
+    this.status.name = "Overstory";
     this.status.command = `${SessionsViewProvider.viewId}.focus`;
 
     const cmd = (id: string, fn: (...a: any[]) => unknown) =>
@@ -215,7 +215,10 @@ class Controller implements vscode.Disposable {
     if (fresh && vscode.workspace.workspaceFile?.fsPath !== p.wsFile) return; // meant for another window
     await this.ctx.globalState.update(PENDING_GLOBAL, undefined);
     if (!fresh) return;
-    vscode.window.setStatusBarMessage(`$(check) Workspace ready: ${path.basename(p.wsFile)}`, 5000);
+    const EDIT = "Edit Preserved Files…";
+    void vscode.window
+      .showInformationMessage(`Workspace ready: ${path.basename(p.wsFile)}. The files new worktrees get can be changed any time from the sidebar's gear button.`, EDIT)
+      .then(pick => (pick === EDIT ? this.configurePreserve() : undefined));
     const a = p.action;
     if (a.kind === "open") await this.openSession(this.findSession(a.key));
     else if (a.kind === "new") await this.newSession(this.model.repos.find(r => r.key === a.repoKey));
@@ -289,6 +292,8 @@ class Controller implements vscode.Disposable {
           return void (await this.createWorkspace([], { kind: "none" }));
         case "addProject":
           return await this.addProjects();
+        case "configurePreserve":
+          return await this.configurePreserve();
         case "dismissWorkspaceBanner":
           await this.ctx.workspaceState.update(WORKSPACE_BANNER_STATE, true);
           this.lastSig = "";
@@ -314,7 +319,7 @@ class Controller implements vscode.Disposable {
     try {
       await this.model.refresh();
     } catch (e) {
-      console.error("[worktree-sessions] model refresh failed", e);
+      console.error("[overstory] model refresh failed", e);
     }
   }
 
@@ -341,7 +346,7 @@ class Controller implements vscode.Disposable {
           this.rebuild();
         } while (this.scanAgain);
       } catch (e) {
-        console.error("[worktree-sessions] scan failed", e);
+        console.error("[overstory] scan failed", e);
       } finally {
         this.scanning = undefined;
       }
@@ -922,7 +927,7 @@ class Controller implements vscode.Disposable {
     try {
       await excludeFromGit(dest, linked);
     } catch (e) {
-      console.error("[worktree-sessions] couldn't exclude linked folders", e);
+      console.error("[overstory] couldn't exclude linked folders", e);
     }
     return [...copied, ...linked.map(l => `${l} (linked)`)];
   }

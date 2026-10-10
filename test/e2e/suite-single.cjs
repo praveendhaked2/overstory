@@ -9,7 +9,7 @@ const log = (...a) => console.log("[e2e:single]", ...a);
 module.exports.run = async function run() {
   const root = process.env.WTS_E2E_ROOT;
   const solo = path.join(root, "solo");
-  const api = await vscode.extensions.getExtension("praveen-dhaked2.worktree-sessions").activate();
+  const api = await vscode.extensions.getExtension("praveendhaked2.overstory").activate();
   await api.ready;
   assert.equal(vscode.workspace.workspaceFile, undefined, "single-folder window");
 

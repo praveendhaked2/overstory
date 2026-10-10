@@ -213,5 +213,5 @@ export async function excludeFromGit(worktreePath: string, relPaths: string[]): 
   if (!add.length) return;
   fs.mkdirSync(path.dirname(file), { recursive: true });
   const prefix = current && !current.endsWith("\n") ? "\n" : "";
-  fs.appendFileSync(file, `${prefix}# linked into worktrees by Worktree Sessions\n${add.join("\n")}\n`);
+  fs.appendFileSync(file, `${prefix}# linked into worktrees by Overstory\n${add.join("\n")}\n`);
 }

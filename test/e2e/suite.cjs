@@ -21,7 +21,7 @@ module.exports.run = async function run() {
   const app = path.join(root, "app");
   const featX = path.join(root, "app-worktrees", "feat-x");
   const featY = path.join(root, "app-worktrees", "feat-y");
-  const ext = vscode.extensions.getExtension("praveen-dhaked2.worktree-sessions");
+  const ext = vscode.extensions.getExtension("praveendhaked2.overstory");
   assert.ok(ext, "extension is loaded");
   const api = await ext.activate();
   await api.ready;

@@ -60,6 +60,7 @@
       h += '<div class="empty">No git repositories in this workspace yet.<div class="empty-act"><button class="btn primary" data-act="addProject">Add Git Project…</button></div></div>';
     for (const r of state.repos) h += renderRepo(r);
     if (state.repos.length) h += '<button class="new add-project" data-act="addProject">+ Add git project…</button>';
+    if (state.repos.length) h += '<button class="new preserve" data-act="configurePreserve" title="Choose which ignored files (.env, node_modules…) every new worktree gets">⚙ Preserved files for new worktrees…</button>';
     // Skip identical repaints so hover and focus don't flicker on background refreshes.
     if (h !== lastListHtml) {
       listEl.innerHTML = h;
@@ -226,6 +227,7 @@
     if (el('[data-act="dismissWs"]')) return post({ type: "dismissWorkspaceBanner" });
     if (el('[data-act="createWorkspace"]')) return post({ type: "createWorkspace" });
     if (el('[data-act="addProject"]')) return post({ type: "addProject" });
+    if (el('[data-act="configurePreserve"]')) return post({ type: "configurePreserve" });
     const home = el("[data-home]");
     if (home) return post({ type: "home", repoKey: home.dataset.home });
     const nw = el("[data-new]");

@@ -121,4 +121,5 @@ export type FromWebview =
   | { type: "dismissBanner" }
   | { type: "createWorkspace" }
   | { type: "addProject" }
+  | { type: "configurePreserve" }
   | { type: "dismissWorkspaceBanner" };

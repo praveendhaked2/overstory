@@ -52,7 +52,7 @@
     app.innerHTML = `<div class="page">
       ${create ? '<p class="eyebrow">New workspace · step 1 of 2</p>' : ""}
       <h1>Files for new worktrees</h1>
-      <p class="lead">Git doesn't check out ignored files in a new worktree, so things like <code>.env</code> are missing. Choose what each new worktree should get from the main checkout. <b>Files are copied. Folders are linked</b> to the main checkout's copy, so nothing large is duplicated.</p>
+      <p class="lead">Git doesn't check out ignored files in a new worktree, so things like <code>.env</code> are missing. Choose what each new worktree should get from the main checkout. <b>Files are copied. Folders are linked</b> to the main checkout's copy, so nothing large is duplicated.${create ? " You can change this later: <b>Preserved files for new worktrees…</b> at the bottom of the sidebar, or the gear button in its title bar." : ""}</p>
       <div class="cols">
         <div>
           <section>

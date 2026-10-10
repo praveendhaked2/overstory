@@ -1,6 +1,6 @@
-# Worktree Sessions
+# Overstory
 
-A VS Code sidebar that lists your **Claude Code** and **Codex** sessions across every repo and git worktree in a multi-root workspace.
+The overstory is the top layer of a forest: the view over every tree. This one is a VS Code sidebar that lists your **Claude Code** and **Codex** sessions across every repo and git worktree in a multi-root workspace.
 
 Click a session and only that repo's workspace folder switches to the session's worktree; every other repo stays where it is. The session then resumes in its own terminal with `claude --resume` or `codex resume`, so rewind and editing earlier messages keep working.
 
@@ -14,7 +14,7 @@ Click a session and only that repo's workspace folder switches to the session's 
 - **Delete session** (bin icon on hover, or Delete key): a dialog inside the sidebar deletes the session and, with checkboxes, removes the worktree and deletes its local branch. It shows the exact commands before running them, and warns about uncommitted changes and commits that exist only on that branch. The primary checkout, and worktrees other sessions still use, are never removed.
 - **Create a workspace in one step.** Opened just a project folder? The sidebar offers **Create workspace…** (also asked on the first switch). It writes a `.code-workspace` with a small placeholder folder first, so switching never reloads VS Code, then reopens the window in it and finishes what you clicked.
 - **Add Git Project…** (sidebar title bar, or the link under the list) adds more repos to the workspace. Plain folders are skipped with a note.
-- **Preserved files.** New worktrees don't get ignored files from git, so you choose what each one gets: `.env` files, `node_modules`, Python `.venv`/`venv`, Claude Code local settings, `.envrc`, plus your own entries: names, globs (`config/*.local.json`) or a regex (matched against the path from the repo root). Files are copied; folders are **linked** to the primary checkout's copy (no reinstall, nothing duplicated) and kept out of `git status`. A **Worktree Files** page shows a live preview of exactly what will be copied or linked in each repo. It opens when creating the workspace, or any time with **Configure Preserved Files…**.
+- **Preserved files.** New worktrees don't get ignored files from git, so you choose what each one gets: `.env` files, `node_modules`, Python `.venv`/`venv`, Claude Code local settings, `.envrc`, plus your own entries: names, globs (`config/*.local.json`) or a regex (matched against the path from the repo root). Files are copied; folders are **linked** to the primary checkout's copy (no reinstall, nothing duplicated) and kept out of `git status`. A **Worktree Files** page shows a live preview of exactly what will be copied or linked in each repo. It opens when creating the workspace, and any time afterwards from the gear button in the sidebar title bar, the **Preserved files for new worktrees…** link under the repo list, or **Configure Preserved Files…** in the Command Palette. Changes apply to worktrees created from then on.
 - **Switch back to primary** (`⌂` on a repo) and **Switch Worktree…** (repo context menu) change folders without starting a session.
 - **Survives reloads and restarts.** Sessions are read from disk (`~/.claude/projects`, `~/.codex/sessions`), and the workspace file remembers each repo's worktree. After a window reload, running terminals are matched to their sessions again.
 - **Right-click** a session to copy its ID, reveal its file or hide it; right-click a repo to switch worktree.
@@ -39,7 +39,7 @@ Session files are read incrementally: after the first scan, only new bytes are r
 | `worktreeSessions.codexCommand` | `codex` | Command for Codex sessions. |
 | `worktreeSessions.worktreeRoot` | `${repoParent}/${repoName}-worktrees` | Where new worktrees go. |
 | `worktreeSessions.autoNamePrefix` | `""` | Prefix for automatic worktree names, e.g. `wt/`. |
-| `worktreeSessions.preserve` | `[]` | Ignored files/folders each new worktree gets. Bare names match in any folder; `re:<regex>` entries match the path from the repo root; folders are linked, files copied. Set via **Configure Preserved Files…**. `git.worktreeIncludeFiles` is honoured too. |
+| `worktreeSessions.preserve` | `[]` | Ignored files/folders each new worktree gets. Bare names match in any folder; `re:<regex>` entries match the path from the repo root; folders are linked, files copied. Set via the sidebar gear button / **Configure Preserved Files…**. `git.worktreeIncludeFiles` is honoured too. |
 | `worktreeSessions.copyFiles` | `[]` | Deprecated alias of `preserve`. |
 | `worktreeSessions.maxAgeDays` | `30` | Hide sessions older than this. |
 | `worktreeSessions.defaultAgent` | `ask` | `claude`, `codex` or `ask`. |
@@ -59,7 +59,7 @@ Session files are read incrementally: after the first scan, only new bytes are r
 npm install
 npm test            # unit + git integration tests
 npm run test:e2e    # runs the extension in the installed VS Code on a throwaway workspace
-npm run package     # typecheck, test, build, and write dist/worktree-sessions.vsix
+npm run package     # typecheck, test, build, and write dist/overstory.vsix
 ```
 
-Install the package with `code --install-extension dist/worktree-sessions.vsix`.
+Install the package with `code --install-extension dist/overstory.vsix`.

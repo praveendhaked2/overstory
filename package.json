@@ -1,9 +1,9 @@
 {
-  "name": "worktree-sessions",
-  "displayName": "Worktree Sessions",
-  "description": "List Claude Code and Codex sessions across every repo and git worktree in a multi-root workspace. Click one to swap only that repo to its worktree and resume the session in a terminal.",
-  "version": "0.7.1",
-  "publisher": "praveen-dhaked2",
+  "name": "overstory",
+  "displayName": "Overstory",
+  "description": "Overstory: your Claude Code and Codex sessions across every repo and git worktree in a multi-root workspace. Click one to swap only that repo to its worktree and resume the session in a terminal.",
+  "version": "0.7.2",
+  "publisher": "praveendhaked2",
   "license": "MIT",
   "private": true,
   "engines": {
@@ -29,7 +29,7 @@
       "activitybar": [
         {
           "id": "worktreeSessions",
-          "title": "Worktree Sessions",
+          "title": "Overstory",
           "icon": "media/activity.svg"
         }
       ]
@@ -39,7 +39,7 @@
         {
           "id": "worktreeSessions.sessions",
           "name": "Sessions",
-          "contextualTitle": "Worktree Sessions",
+          "contextualTitle": "Overstory",
           "type": "webview"
         }
       ]
@@ -48,109 +48,109 @@
       {
         "command": "worktreeSessions.refresh",
         "title": "Refresh",
-        "category": "Worktree Sessions",
+        "category": "Overstory",
         "icon": "$(refresh)"
       },
       {
         "command": "worktreeSessions.collapseAll",
         "title": "Collapse All Repos",
-        "category": "Worktree Sessions",
+        "category": "Overstory",
         "icon": "$(collapse-all)"
       },
       {
         "command": "worktreeSessions.newSession",
         "title": "New Session…",
-        "category": "Worktree Sessions",
+        "category": "Overstory",
         "icon": "$(add)"
       },
       {
         "command": "worktreeSessions.newSessionInRepo",
         "title": "New Session in This Repo…",
-        "category": "Worktree Sessions",
+        "category": "Overstory",
         "icon": "$(add)"
       },
       {
         "command": "worktreeSessions.openSession",
         "title": "Resume Session",
-        "category": "Worktree Sessions"
+        "category": "Overstory"
       },
       {
         "command": "worktreeSessions.deleteSession",
         "title": "Delete Session…",
-        "category": "Worktree Sessions",
+        "category": "Overstory",
         "icon": "$(trash)"
       },
       {
         "command": "worktreeSessions.switchToPrimary",
         "title": "Switch Back to Primary Checkout",
-        "category": "Worktree Sessions",
+        "category": "Overstory",
         "icon": "$(home)"
       },
       {
         "command": "worktreeSessions.switchWorktree",
         "title": "Switch Worktree…",
-        "category": "Worktree Sessions",
+        "category": "Overstory",
         "icon": "$(git-branch)"
       },
       {
         "command": "worktreeSessions.setFilter",
         "title": "Filter Sessions…",
-        "category": "Worktree Sessions",
+        "category": "Overstory",
         "icon": "$(filter)"
       },
       {
         "command": "worktreeSessions.hideSession",
         "title": "Hide Session",
-        "category": "Worktree Sessions"
+        "category": "Overstory"
       },
       {
         "command": "worktreeSessions.unhideAll",
         "title": "Show Hidden Sessions Again",
-        "category": "Worktree Sessions"
+        "category": "Overstory"
       },
       {
         "command": "worktreeSessions.copySessionId",
         "title": "Copy Session ID",
-        "category": "Worktree Sessions"
+        "category": "Overstory"
       },
       {
         "command": "worktreeSessions.revealSessionFile",
         "title": "Reveal Session File",
-        "category": "Worktree Sessions"
+        "category": "Overstory"
       },
       {
         "command": "worktreeSessions.addPlaceholderFolder",
         "title": "Add Placeholder First Folder (Stops Reloads When Switching)",
-        "category": "Worktree Sessions"
+        "category": "Overstory"
       },
       {
         "command": "worktreeSessions.createWorkspace",
         "title": "Create Workspace…",
-        "category": "Worktree Sessions",
+        "category": "Overstory",
         "icon": "$(new-folder)"
       },
       {
         "command": "worktreeSessions.addProject",
         "title": "Add Git Project…",
-        "category": "Worktree Sessions",
+        "category": "Overstory",
         "icon": "$(repo-clone)"
       },
       {
         "command": "worktreeSessions.configurePreserve",
         "title": "Configure Preserved Files…",
-        "category": "Worktree Sessions",
-        "icon": "$(files)"
+        "category": "Overstory",
+        "icon": "$(settings-gear)"
       },
       {
         "command": "worktreeSessions.pinSession",
         "title": "Pin Session",
-        "category": "Worktree Sessions",
+        "category": "Overstory",
         "icon": "$(pin)"
       },
       {
         "command": "worktreeSessions.unpinSession",
         "title": "Unpin Session",
-        "category": "Worktree Sessions",
+        "category": "Overstory",
         "icon": "$(pinned)"
       }
     ],
@@ -194,7 +194,7 @@
         {
           "command": "worktreeSessions.configurePreserve",
           "when": "view == worktreeSessions.sessions",
-          "group": "more@0"
+          "group": "navigation@1c"
         },
         {
           "command": "worktreeSessions.createWorkspace",
@@ -290,7 +290,7 @@
       ]
     },
     "configuration": {
-      "title": "Worktree Sessions",
+      "title": "Overstory",
       "properties": {
         "worktreeSessions.claudeCommand": {
           "type": "string",
@@ -342,7 +342,7 @@
             "type": "string"
           },
           "default": [],
-          "markdownDescription": "Ignored files and folders every new worktree gets from the primary checkout. Files are copied; folders (e.g. `node_modules`, `.venv`) are linked to the original. A bare name matches in any folder (`.env`); a path with `/` is anchored to the repo root. Edit with **Worktree Sessions: Configure Preserved Files…**."
+          "markdownDescription": "Ignored files and folders every new worktree gets from the primary checkout. Files are copied; folders (e.g. `node_modules`, `.venv`) are linked to the original. A bare name matches in any folder (`.env`); a path with `/` is anchored to the repo root. Edit with **Overstory: Configure Preserved Files…**."
         }
       }
     }
@@ -353,7 +353,7 @@
     "typecheck": "tsc --noEmit",
     "test": "node --no-warnings --test test/*.test.ts",
     "test:e2e": "npm run build && node test/e2e/run.mjs",
-    "package": "npm run typecheck && npm test && npm run build -- --production && vsce package --no-dependencies --allow-missing-repository -o dist/worktree-sessions.vsix"
+    "package": "npm run typecheck && npm test && npm run build -- --production && vsce package --no-dependencies --allow-missing-repository -o dist/overstory.vsix"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

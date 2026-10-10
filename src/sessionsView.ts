@@ -32,7 +32,7 @@ export class SessionsViewProvider implements vscode.WebviewViewProvider {
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${view.webview.cspSource}; script-src 'nonce-${nonce}';">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="${css}">
-<title>Worktree Sessions</title>
+<title>Overstory</title>
 </head>
 <body>
 <div id="app"></div>

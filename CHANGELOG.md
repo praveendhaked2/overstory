@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.2
+
+- Renamed to **Overstory** (extension id `praveendhaked2.overstory`). Commands, views and the `worktreeSessions.*` settings keep their ids, so existing settings carry over; uninstall the old "Worktree Sessions" entry after installing.
+- The Worktree Files page is easy to reopen after the workspace exists: a gear button in the sidebar title bar, a **Preserved files for new worktrees…** link under the repo list, a hint on the create page, and an "Edit Preserved Files…" button on the "Workspace ready" message.
+
 ## 0.7.1
 
 - Fix: a resumed Codex session showed once per file (Codex continues it in a new rollout file with the same id). Files of one session are merged into one row; deleting removes all of them.
