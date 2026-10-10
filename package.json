@@ -1,0 +1,366 @@
+{
+  "name": "worktree-sessions",
+  "displayName": "Worktree Sessions",
+  "description": "List Claude Code and Codex sessions across every repo and git worktree in a multi-root workspace. Click one to swap only that repo to its worktree and resume the session in a terminal.",
+  "version": "0.7.1",
+  "publisher": "praveen-dhaked2",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Other",
+    "SCM Providers"
+  ],
+  "keywords": [
+    "claude",
+    "codex",
+    "git worktree",
+    "agents",
+    "multi-root"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "worktreeSessions",
+          "title": "Worktree Sessions",
+          "icon": "media/activity.svg"
+        }
+      ]
+    },
+    "views": {
+      "worktreeSessions": [
+        {
+          "id": "worktreeSessions.sessions",
+          "name": "Sessions",
+          "contextualTitle": "Worktree Sessions",
+          "type": "webview"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "worktreeSessions.refresh",
+        "title": "Refresh",
+        "category": "Worktree Sessions",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "worktreeSessions.collapseAll",
+        "title": "Collapse All Repos",
+        "category": "Worktree Sessions",
+        "icon": "$(collapse-all)"
+      },
+      {
+        "command": "worktreeSessions.newSession",
+        "title": "New Session…",
+        "category": "Worktree Sessions",
+        "icon": "$(add)"
+      },
+      {
+        "command": "worktreeSessions.newSessionInRepo",
+        "title": "New Session in This Repo…",
+        "category": "Worktree Sessions",
+        "icon": "$(add)"
+      },
+      {
+        "command": "worktreeSessions.openSession",
+        "title": "Resume Session",
+        "category": "Worktree Sessions"
+      },
+      {
+        "command": "worktreeSessions.deleteSession",
+        "title": "Delete Session…",
+        "category": "Worktree Sessions",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "worktreeSessions.switchToPrimary",
+        "title": "Switch Back to Primary Checkout",
+        "category": "Worktree Sessions",
+        "icon": "$(home)"
+      },
+      {
+        "command": "worktreeSessions.switchWorktree",
+        "title": "Switch Worktree…",
+        "category": "Worktree Sessions",
+        "icon": "$(git-branch)"
+      },
+      {
+        "command": "worktreeSessions.setFilter",
+        "title": "Filter Sessions…",
+        "category": "Worktree Sessions",
+        "icon": "$(filter)"
+      },
+      {
+        "command": "worktreeSessions.hideSession",
+        "title": "Hide Session",
+        "category": "Worktree Sessions"
+      },
+      {
+        "command": "worktreeSessions.unhideAll",
+        "title": "Show Hidden Sessions Again",
+        "category": "Worktree Sessions"
+      },
+      {
+        "command": "worktreeSessions.copySessionId",
+        "title": "Copy Session ID",
+        "category": "Worktree Sessions"
+      },
+      {
+        "command": "worktreeSessions.revealSessionFile",
+        "title": "Reveal Session File",
+        "category": "Worktree Sessions"
+      },
+      {
+        "command": "worktreeSessions.addPlaceholderFolder",
+        "title": "Add Placeholder First Folder (Stops Reloads When Switching)",
+        "category": "Worktree Sessions"
+      },
+      {
+        "command": "worktreeSessions.createWorkspace",
+        "title": "Create Workspace…",
+        "category": "Worktree Sessions",
+        "icon": "$(new-folder)"
+      },
+      {
+        "command": "worktreeSessions.addProject",
+        "title": "Add Git Project…",
+        "category": "Worktree Sessions",
+        "icon": "$(repo-clone)"
+      },
+      {
+        "command": "worktreeSessions.configurePreserve",
+        "title": "Configure Preserved Files…",
+        "category": "Worktree Sessions",
+        "icon": "$(files)"
+      },
+      {
+        "command": "worktreeSessions.pinSession",
+        "title": "Pin Session",
+        "category": "Worktree Sessions",
+        "icon": "$(pin)"
+      },
+      {
+        "command": "worktreeSessions.unpinSession",
+        "title": "Unpin Session",
+        "category": "Worktree Sessions",
+        "icon": "$(pinned)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "worktreeSessions.newSession",
+          "when": "view == worktreeSessions.sessions",
+          "group": "navigation@1"
+        },
+        {
+          "command": "worktreeSessions.addProject",
+          "when": "view == worktreeSessions.sessions",
+          "group": "navigation@1b"
+        },
+        {
+          "command": "worktreeSessions.refresh",
+          "when": "view == worktreeSessions.sessions",
+          "group": "navigation@2"
+        },
+        {
+          "command": "worktreeSessions.collapseAll",
+          "when": "view == worktreeSessions.sessions",
+          "group": "navigation@3"
+        },
+        {
+          "command": "worktreeSessions.setFilter",
+          "when": "view == worktreeSessions.sessions",
+          "group": "more@1"
+        },
+        {
+          "command": "worktreeSessions.unhideAll",
+          "when": "view == worktreeSessions.sessions",
+          "group": "more@2"
+        },
+        {
+          "command": "worktreeSessions.addPlaceholderFolder",
+          "when": "view == worktreeSessions.sessions && workbenchState == workspace",
+          "group": "more@3"
+        },
+        {
+          "command": "worktreeSessions.configurePreserve",
+          "when": "view == worktreeSessions.sessions",
+          "group": "more@0"
+        },
+        {
+          "command": "worktreeSessions.createWorkspace",
+          "when": "view == worktreeSessions.sessions && (workbenchState != workspace || workspaceFolderCount == 0)",
+          "group": "more@0b"
+        }
+      ],
+      "webview/context": [
+        {
+          "command": "worktreeSessions.pinSession",
+          "when": "webviewId == 'worktreeSessions.sessions' && webviewSection == 'session' && !sessionPinned",
+          "group": "0_pin@1"
+        },
+        {
+          "command": "worktreeSessions.unpinSession",
+          "when": "webviewId == 'worktreeSessions.sessions' && webviewSection == 'session' && sessionPinned",
+          "group": "0_pin@1"
+        },
+        {
+          "command": "worktreeSessions.openSession",
+          "when": "webviewId == 'worktreeSessions.sessions' && webviewSection == 'session'",
+          "group": "1_session@1"
+        },
+        {
+          "command": "worktreeSessions.copySessionId",
+          "when": "webviewId == 'worktreeSessions.sessions' && webviewSection == 'session'",
+          "group": "1_session@2"
+        },
+        {
+          "command": "worktreeSessions.revealSessionFile",
+          "when": "webviewId == 'worktreeSessions.sessions' && webviewSection == 'session'",
+          "group": "1_session@3"
+        },
+        {
+          "command": "worktreeSessions.hideSession",
+          "when": "webviewId == 'worktreeSessions.sessions' && webviewSection == 'session'",
+          "group": "2_danger@1"
+        },
+        {
+          "command": "worktreeSessions.deleteSession",
+          "when": "webviewId == 'worktreeSessions.sessions' && webviewSection == 'session'",
+          "group": "2_danger@2"
+        },
+        {
+          "command": "worktreeSessions.newSessionInRepo",
+          "when": "webviewId == 'worktreeSessions.sessions' && webviewSection == 'repo'",
+          "group": "1_repo@1"
+        },
+        {
+          "command": "worktreeSessions.switchWorktree",
+          "when": "webviewId == 'worktreeSessions.sessions' && webviewSection == 'repo'",
+          "group": "1_repo@2"
+        },
+        {
+          "command": "worktreeSessions.switchToPrimary",
+          "when": "webviewId == 'worktreeSessions.sessions' && webviewSection == 'repo'",
+          "group": "1_repo@3"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "worktreeSessions.newSessionInRepo",
+          "when": "false"
+        },
+        {
+          "command": "worktreeSessions.openSession",
+          "when": "false"
+        },
+        {
+          "command": "worktreeSessions.deleteSession",
+          "when": "false"
+        },
+        {
+          "command": "worktreeSessions.hideSession",
+          "when": "false"
+        },
+        {
+          "command": "worktreeSessions.copySessionId",
+          "when": "false"
+        },
+        {
+          "command": "worktreeSessions.revealSessionFile",
+          "when": "false"
+        },
+        {
+          "command": "worktreeSessions.pinSession",
+          "when": "false"
+        },
+        {
+          "command": "worktreeSessions.unpinSession",
+          "when": "false"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Worktree Sessions",
+      "properties": {
+        "worktreeSessions.claudeCommand": {
+          "type": "string",
+          "default": "claude",
+          "description": "Command used to start or resume Claude Code sessions. Extra flags can be added here, e.g. `claude --permission-mode acceptEdits`."
+        },
+        "worktreeSessions.codexCommand": {
+          "type": "string",
+          "default": "codex",
+          "description": "Command used to start or resume Codex sessions."
+        },
+        "worktreeSessions.worktreeRoot": {
+          "type": "string",
+          "default": "${repoParent}/${repoName}-worktrees",
+          "markdownDescription": "Folder where new worktrees are created. Each worktree goes in a subfolder named after its branch (`/` becomes `-`). Variables: `${repoParent}`, `${repoName}`, `${repoPath}`, `${home}`."
+        },
+        "worktreeSessions.copyFiles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "markdownDescription": "Deprecated: use `#worktreeSessions.preserve#`. Still honoured."
+        },
+        "worktreeSessions.maxAgeDays": {
+          "type": "number",
+          "default": 30,
+          "minimum": 1,
+          "description": "Only list sessions active within this many days."
+        },
+        "worktreeSessions.defaultAgent": {
+          "type": "string",
+          "enum": [
+            "ask",
+            "claude",
+            "codex"
+          ],
+          "default": "ask",
+          "description": "Agent used for new sessions. 'ask' shows a picker every time."
+        },
+        "worktreeSessions.autoNamePrefix": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Prefix for automatically named worktree branches, e.g. `wt/` gives `wt/brisk-otter`."
+        },
+        "worktreeSessions.preserve": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "markdownDescription": "Ignored files and folders every new worktree gets from the primary checkout. Files are copied; folders (e.g. `node_modules`, `.venv`) are linked to the original. A bare name matches in any folder (`.env`); a path with `/` is anchored to the repo root. Edit with **Worktree Sessions: Configure Preserved Files…**."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "node --no-warnings --test test/*.test.ts",
+    "test:e2e": "npm run build && node test/e2e/run.mjs",
+    "package": "npm run typecheck && npm test && npm run build -- --production && vsce package --no-dependencies --allow-missing-repository -o dist/worktree-sessions.vsix"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@types/vscode": "1.100.0",
+    "@vscode/test-electron": "3.1.0",
+    "@vscode/vsce": "4.0.0",
+    "esbuild": "0.28.2",
+    "typescript": "5.9.3"
+  }
+}

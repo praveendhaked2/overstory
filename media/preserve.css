@@ -1,0 +1,90 @@
+/* Worktree Files page: two columns (choices | live preview) on wide editors, one column when narrow. */
+:root {
+  --fg: var(--vscode-foreground);
+  --dim: var(--vscode-descriptionForeground);
+  --line: var(--vscode-widget-border, var(--vscode-panel-border, rgba(128,128,128,.3)));
+  --card: var(--vscode-editorWidget-background, var(--vscode-sideBar-background));
+  --hover: var(--vscode-list-hoverBackground);
+  --focus: var(--vscode-focusBorder);
+  --copy: var(--vscode-charts-blue, #3794ff);
+  --link: var(--vscode-charts-purple, #b180d7);
+  --ok: var(--vscode-charts-green, #89d185);
+  --bad: var(--vscode-errorForeground, #f85149);
+  --mono: var(--vscode-editor-font-family, Menlo, Consolas, monospace);
+}
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--fg); background: var(--vscode-editor-background); font-family: var(--vscode-font-family); font-size: 13px; line-height: 1.5; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 1px solid var(--focus); outline-offset: 1px; }
+code, .mono { font-family: var(--mono); font-size: 12px; }
+
+.page { max-width: 1080px; margin: 0 auto; padding: 28px 24px 96px; }
+.eyebrow { color: var(--dim); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; margin: 0 0 6px; }
+h1 { font-size: 20px; font-weight: 600; margin: 0 0 6px; text-wrap: balance; }
+.lead { color: var(--dim); max-width: 68ch; margin: 0 0 22px; }
+.lead b { color: var(--fg); font-weight: 600; }
+
+.cols { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 28px; align-items: start; }
+@media (max-width: 860px) { .cols { grid-template-columns: 1fr; } }
+.preview { position: sticky; top: 16px; }
+
+h2 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--dim); margin: 0 0 8px; display: flex; align-items: baseline; gap: 8px; }
+h2 .sum { text-transform: none; letter-spacing: 0; font-weight: 400; margin-left: auto; }
+section + section { margin-top: 26px; }
+
+.list { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--card); }
+.item { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; gap: 4px 10px; align-items: start; padding: 10px 12px; cursor: pointer; }
+.item + .item { border-top: 1px solid var(--line); }
+.item:hover { background: var(--hover); }
+.item input { margin: 3px 0 0; accent-color: var(--focus); }
+.item .name { font-weight: 600; }
+.item .sub { grid-column: 2 / 4; color: var(--dim); font-size: 12px; display: flex; gap: 6px; flex-wrap: wrap; align-items: baseline; }
+.item .sub code { color: var(--fg); opacity: .85; }
+.tags { display: flex; gap: 6px; align-items: center; }
+.badge { font-size: 10px; font-weight: 700; letter-spacing: .05em; border-radius: 3px; padding: 0 5px; line-height: 16px; }
+.badge.copy { color: var(--copy); background: color-mix(in srgb, var(--copy) 15%, transparent); }
+.badge.link { color: var(--link); background: color-mix(in srgb, var(--link) 15%, transparent); }
+.badge.glob, .badge.regex { color: var(--dim); border: 1px solid var(--line); }
+.found { color: var(--ok); font-size: 11px; white-space: nowrap; }
+
+.custom-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 8px 8px 12px; }
+.custom-row + .custom-row { border-top: 1px solid var(--line); }
+.custom-row code { overflow-wrap: anywhere; }
+.custom-row .err { grid-column: 2 / 4; color: var(--bad); font-size: 12px; }
+.empty-custom { padding: 10px 12px; color: var(--dim); }
+.x { background: none; border: 0; color: var(--dim); width: 24px; height: 24px; border-radius: 4px; cursor: pointer; }
+.x:hover { color: var(--bad); background: var(--hover); }
+
+.adder { margin-top: 10px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--vscode-input-border, var(--line)); border-radius: 4px; overflow: hidden; }
+.seg button { background: none; border: 0; padding: 4px 10px; cursor: pointer; color: var(--dim); }
+.seg button.on { background: var(--vscode-button-secondaryBackground); color: var(--vscode-button-secondaryForeground); }
+.input { width: 100%; background: var(--vscode-input-background); color: var(--vscode-input-foreground); border: 1px solid var(--vscode-input-border, var(--line)); border-radius: 4px; padding: 5px 8px; font-family: var(--mono); font-size: 12px; }
+.input:focus { outline: none; border-color: var(--focus); }
+.input.invalid { border-color: var(--bad); }
+.hint { margin-top: 6px; color: var(--dim); font-size: 12px; min-height: 18px; }
+.hint.bad { color: var(--bad); }
+.examples { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; color: var(--dim); font-size: 12px; }
+.chip { border: 1px solid var(--line); background: none; border-radius: 10px; padding: 0 8px; cursor: pointer; font-family: var(--mono); font-size: 11px; color: var(--dim); }
+.chip:hover { color: var(--fg); border-color: var(--focus); }
+
+.repo { border: 1px solid var(--line); border-radius: 6px; background: var(--card); overflow: hidden; }
+.repo + .repo { margin-top: 10px; }
+.repo-h { display: flex; gap: 8px; align-items: baseline; padding: 8px 12px; border-bottom: 1px solid var(--line); font-weight: 600; }
+.repo-h .sum { margin-left: auto; color: var(--dim); font-weight: 400; font-size: 12px; }
+.match { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 8px; align-items: baseline; padding: 3px 12px; }
+.match code { overflow-wrap: anywhere; }
+.match:first-of-type { padding-top: 8px; }
+.repo .none, .repo .more { color: var(--dim); padding: 8px 12px; font-size: 12px; }
+.repo .more { padding-top: 4px; }
+.scanning { opacity: .55; transition: opacity .15s; }
+
+.foot { position: fixed; left: 0; right: 0; bottom: 0; background: var(--vscode-editor-background); border-top: 1px solid var(--line); }
+.foot-in { max-width: 1080px; margin: 0 auto; padding: 12px 24px; display: flex; gap: 8px; align-items: center; }
+.foot .note { color: var(--dim); font-size: 12px; margin-right: auto; }
+.btn { border: 1px solid var(--vscode-button-border, transparent); border-radius: 3px; padding: 5px 14px; cursor: pointer; background: var(--vscode-button-secondaryBackground); color: var(--vscode-button-secondaryForeground); }
+.btn:hover { background: var(--vscode-button-secondaryHoverBackground); }
+.btn.primary { background: var(--vscode-button-background); color: var(--vscode-button-foreground); }
+.btn.primary:hover { background: var(--vscode-button-hoverBackground); }
+.btn:disabled { opacity: .5; cursor: default; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
