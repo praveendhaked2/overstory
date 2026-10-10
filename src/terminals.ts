@@ -137,21 +137,21 @@ export class TerminalManager implements vscode.Disposable {
     }
     const t = this.create(opts.name, opts.cwd, opts.key, opts.agent);
     this.byKey.set(opts.key, t);
-    t.sendText(opts.command);
     t.show(false);
     this.agentPids.set(t, -1);
     this.onDidChange.fire();
+    await runWhenShellReady(t, opts.command);
     return "started";
   }
 
   /** Starts an agent whose session id isn't known yet (Codex). It is linked on a later scan. */
-  startUnlinked(opts: { name: string; cwd: string; command: string; agent: Agent }): void {
+  async startUnlinked(opts: { name: string; cwd: string; command: string; agent: Agent }): Promise<void> {
     const token = "new-" + Math.random().toString(36).slice(2, 8).padEnd(6, "0");
     const t = this.create(`${opts.name} · ${token}`, opts.cwd, `${opts.agent}:${token}`, opts.agent, true);
     this.pendingNew.push({ token, agent: opts.agent, cwd: opts.cwd, startedMs: Date.now(), terminal: t });
-    t.sendText(opts.command);
     t.show(false);
     this.onDidChange.fire();
+    await runWhenShellReady(t, opts.command);
   }
 
   private create(name: string, cwd: string, key: string, agent: Agent, rawName = false): vscode.Terminal {
@@ -177,6 +177,77 @@ export class TerminalManager implements vscode.Disposable {
   dispose(): void {
     this.disposables.forEach(d => d.dispose());
   }
+}
+
+/** How long to wait for shell integration in a new terminal before sending the command anyway. */
+const SHELL_READY_TIMEOUT_MS = 5000;
+/** After the shell is ready, how long to watch for another extension's startup command before sending ours. */
+const SETTLE_GRACE_MS = 750;
+/** Upper bound on waiting for such a startup command (e.g. a venv activation) to finish. */
+const SETTLE_MAX_MS = 10000;
+
+/**
+ * Sends `command` to a terminal that was just created, once its shell can take input.
+ *
+ * Text sent right after `createTerminal` reaches zsh/bash before the prompt exists and can be dropped
+ * while the shell initializes. Other extensions also run a command in every new terminal as soon as
+ * shell integration is ready (the Python extension sends `source .venv/bin/activate` when the folder has a
+ * `.venv`); sending the agent command before that one finishes either loses the agent command or types
+ * the activation line into the agent's prompt. So: wait for shell integration, then let any command that
+ * starts in the next moment finish, then send.
+ */
+async function runWhenShellReady(t: vscode.Terminal, command: string): Promise<void> {
+  if (!t.shellIntegration) await waitForShellIntegration(t);
+  if (t.exitStatus) return;
+  if (t.shellIntegration) await waitForStartupCommands(t);
+  if (t.exitStatus) return;
+  t.sendText(command);
+}
+
+function waitForShellIntegration(t: vscode.Terminal): Promise<void> {
+  const enabled = vscode.workspace.getConfiguration("terminal.integrated.shellIntegration").get<boolean>("enabled", true);
+  return new Promise<void>(resolve => {
+    const done = () => {
+      clearTimeout(timer);
+      listeners.forEach(d => d.dispose());
+      resolve();
+    };
+    // Without shell integration there is no readiness signal; a fixed delay past process start is the best available.
+    const timer = setTimeout(done, enabled ? SHELL_READY_TIMEOUT_MS : 500);
+    const listeners = [
+      vscode.window.onDidChangeTerminalShellIntegration(e => e.terminal === t && done()),
+      vscode.window.onDidCloseTerminal(x => x === t && done()),
+    ];
+  });
+}
+
+/** Resolves when no command started in the terminal within the grace period, or when the one(s) that did have ended. */
+function waitForStartupCommands(t: vscode.Terminal): Promise<void> {
+  return new Promise<void>(resolve => {
+    let running = 0;
+    const done = () => {
+      clearTimeout(grace);
+      clearTimeout(cap);
+      listeners.forEach(d => d.dispose());
+      resolve();
+    };
+    let grace = setTimeout(done, SETTLE_GRACE_MS);
+    const cap = setTimeout(done, SETTLE_MAX_MS);
+    const listeners = [
+      vscode.window.onDidStartTerminalShellExecution(e => {
+        if (e.terminal !== t) return;
+        running++;
+        clearTimeout(grace);
+      }),
+      vscode.window.onDidEndTerminalShellExecution(e => {
+        if (e.terminal !== t) return;
+        running = Math.max(0, running - 1);
+        // Give a follow-up startup command (some activations send two) a shorter window before sending ours.
+        if (running === 0) grace = setTimeout(done, 150);
+      }),
+      vscode.window.onDidCloseTerminal(x => x === t && done()),
+    ];
+  });
 }
 
 /** The agent process running under the terminal's shell, if any. */

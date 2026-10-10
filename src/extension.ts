@@ -656,7 +656,7 @@ class Controller implements vscode.Disposable {
       this.selected = sessionKey("claude", id);
       await this.terminals.open({ key: this.selected, name, cwd: wt.path, command: `${cfg().get<string>("claudeCommand", "claude")} --session-id ${id}`, agent });
     } else {
-      this.terminals.startUnlinked({ name, cwd: wt.path, command: cfg().get<string>("codexCommand", "codex"), agent });
+      await this.terminals.startUnlinked({ name, cwd: wt.path, command: cfg().get<string>("codexCommand", "codex"), agent });
     }
     await this.swap(fresh, wt);
     vscode.window.setStatusBarMessage(`$(sparkle) Started ${AGENT_NAME[agent]} in ${fresh.name} ${worktreeLabel(wt)}`, 4000);

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.3
+
+- Fix: starting or resuming a session in a folder with a `.venv` (or anything else that runs a command in every new terminal, like the Python extension's `source .venv/bin/activate`) could lose the agent command, leaving an activated shell with no Claude/Codex running. The command is now sent once the shell is ready and any such startup command has finished.
+
 ## 0.7.2
 
 - Renamed to **Overstory** (extension id `praveendhaked2.overstory`). Commands, views and the `worktreeSessions.*` settings keep their ids, so existing settings carry over; uninstall the old "Worktree Sessions" entry after installing.

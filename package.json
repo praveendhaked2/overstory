@@ -2,7 +2,7 @@
   "name": "overstory",
   "displayName": "Overstory",
   "description": "Overstory: your Claude Code and Codex sessions across every repo and git worktree in a multi-root workspace. Click one to swap only that repo to its worktree and resume the session in a terminal.",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "publisher": "praveendhaked2",
   "license": "MIT",
   "private": true,
