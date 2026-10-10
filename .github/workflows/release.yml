@@ -34,6 +34,11 @@ jobs:
           npm run package
           mv dist/overstory.vsix "dist/overstory-${GITHUB_REF_NAME#v}.vsix"
 
+      - name: Publish to the VS Code Marketplace
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: npx vsce publish --packagePath dist/overstory-*.vsix
+
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:

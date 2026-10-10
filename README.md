@@ -6,14 +6,15 @@ Click a session and only that repo's workspace folder switches to the session's 
 
 ## Install
 
-Overstory isn't on the Marketplace yet. Install it from a GitHub release instead:
+Search for **Overstory** in the Extensions view, or run:
 
-1. Download `overstory-<version>.vsix` from the [latest release](https://github.com/praveendhaked2/overstory/releases/latest).
-2. Run `code --install-extension overstory-<version>.vsix`, or in VS Code open the Extensions view, click the `...` menu and choose **Install from VSIX…**.
+```bash
+code --install-extension praveendhaked2.overstory
+```
 
-Updates are manual: install the newer `.vsix` the same way over the old one.
+Marketplace page: https://marketplace.visualstudio.com/items?itemName=praveendhaked2.overstory
 
-Or build it yourself: `npm install && npm run package` writes `dist/overstory.vsix` (see [Develop](#develop)).
+To install without the Marketplace, download `overstory-<version>.vsix` from the [latest release](https://github.com/praveendhaked2/overstory/releases/latest) and run `code --install-extension overstory-<version>.vsix`, or choose **Install from VSIX…** from the `...` menu in the Extensions view. Updates are manual on that path.
 
 ## Features
 
@@ -74,3 +75,14 @@ npm run package     # typecheck, test, build, and write dist/overstory.vsix
 ```
 
 Install the package with `code --install-extension dist/overstory.vsix`.
+
+### Release
+
+Bump `version` in `package.json`, add a CHANGELOG entry, commit, then tag and push:
+
+```bash
+git tag v0.7.3
+git push origin main v0.7.3
+```
+
+The release workflow runs the checks, attaches the `.vsix` to a GitHub release and publishes the same package to the Marketplace. Publishing needs a `VSCE_PAT` repository secret: an Azure DevOps personal access token with the **Marketplace: Manage** scope for all accessible organizations.
