@@ -4,6 +4,17 @@ The overstory is the top layer of a forest: the view over every tree. This one i
 
 Click a session and only that repo's workspace folder switches to the session's worktree; every other repo stays where it is. The session then resumes in its own terminal with `claude --resume` or `codex resume`, so rewind and editing earlier messages keep working.
 
+## Install
+
+Overstory isn't on the Marketplace yet. Install it from a GitHub release instead:
+
+1. Download `overstory-<version>.vsix` from the [latest release](https://github.com/praveendhaked2/overstory/releases/latest).
+2. Run `code --install-extension overstory-<version>.vsix`, or in VS Code open the Extensions view, click the `...` menu and choose **Install from VSIX…**.
+
+Updates are manual: install the newer `.vsix` the same way over the old one.
+
+Or build it yourself: `npm install && npm run package` writes `dist/overstory.vsix` (see [Develop](#develop)).
+
 ## Features
 
 - **Sessions grouped by repo**: waiting for input first, then running, then open but idle, then the rest newest first. Each row shows the title, an agent chip (CLAUDE / CODEX), its worktree (`⌂ main` for the primary checkout, `⎇ feat/x` for linked worktrees), prompt count and last activity. Each repo shows 5 sessions, with **+5 more**, **Show all** and **Compact** (back to 5). Repos collapse, and filter chips narrow the list to Active (running or waiting), Claude or Codex.

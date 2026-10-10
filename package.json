@@ -6,6 +6,14 @@
   "publisher": "praveendhaked2",
   "license": "MIT",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/praveendhaked2/overstory.git"
+  },
+  "homepage": "https://github.com/praveendhaked2/overstory#readme",
+  "bugs": {
+    "url": "https://github.com/praveendhaked2/overstory/issues"
+  },
   "engines": {
     "vscode": "^1.100.0"
   },
@@ -353,7 +361,7 @@
     "typecheck": "tsc --noEmit",
     "test": "node --no-warnings --test test/*.test.ts",
     "test:e2e": "npm run build && node test/e2e/run.mjs",
-    "package": "npm run typecheck && npm test && npm run build -- --production && vsce package --no-dependencies --allow-missing-repository -o dist/overstory.vsix"
+    "package": "npm run typecheck && npm test && npm run build -- --production && vsce package --no-dependencies -o dist/overstory.vsix"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",
