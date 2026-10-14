@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.4
+
+- Fix: Codex's guardian approval reviewer writes its own rollout files ("Guardian review") into the sessions folder, as do spawned subagents, compaction and memory consolidation. They showed up as sessions that couldn't be opened, since `codex resume` refuses them. Threads with an internal source are no longer listed.
+
 ## 0.7.3
 
 - Fix: starting or resuming a session in a folder with a `.venv` (or anything else that runs a command in every new terminal, like the Python extension's `source .venv/bin/activate`) could lose the agent command, leaving an activated shell with no Claude/Codex running. The command is now sent once the shell is ready and any such startup command has finished.

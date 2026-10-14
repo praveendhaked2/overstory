@@ -39,6 +39,8 @@ export interface Parsed {
   turnOpen?: boolean;
   /** tool call id -> tool name */
   pending?: Record<string, string>;
+  /** Codex: an internal thread (guardian approval review, subagent, compaction, memory consolidation). Not a user session and `codex resume` refuses it. */
+  internal?: boolean;
 }
 
 function endTurn(p: Parsed): void {
@@ -155,6 +157,21 @@ export function applyClaudeLine(p: Parsed, line: string): void {
   }
 }
 
+const CODEX_INTERNAL_THREAD_SOURCES = new Set(["subagent", "guardian_review", "memory_consolidation"]);
+
+/**
+ * Codex writes rollouts for threads it runs on its own behalf into the same sessions folder:
+ * the guardian approval reviewer (`"source":{"subagent":{"other":"guardian"}}`, titled "Guardian review"),
+ * spawned subagents, compaction and memory consolidation. Codex hides them from its own picker
+ * and `codex resume` rejects them, so they must not be listed as sessions.
+ * Interactive sources are plain strings ("cli", "vscode", "exec", …); internal ones are objects.
+ */
+export function codexInternalSource(meta: any): boolean {
+  const src = meta?.source;
+  if (src !== undefined && src !== null && typeof src !== "string") return true;
+  return typeof meta?.thread_source === "string" && CODEX_INTERNAL_THREAD_SOURCES.has(meta.thread_source);
+}
+
 export function applyCodexLine(p: Parsed, line: string): void {
   if (
     !line.includes('"session_meta"') &&
@@ -173,6 +190,7 @@ export function applyCodexLine(p: Parsed, line: string): void {
   }
   const pl = o.payload ?? {};
   if (o.type === "session_meta") {
+    if (codexInternalSource(pl)) p.internal = true;
     if (typeof pl.id === "string") p.id ??= pl.id;
     if (typeof pl.cwd === "string") p.cwd ??= pl.cwd;
     const ts = Date.parse(pl.timestamp ?? o.timestamp ?? "");
@@ -233,7 +251,7 @@ export class SessionScanner {
       await Promise.all(files.map(async f => {
         seen.add(f.file);
         const parsed = await this.parse(f.file, f.size, f.mtimeMs, agent === "claude" ? applyClaudeLine : applyCodexLine);
-        if (!parsed?.cwd) return;
+        if (!parsed?.cwd || parsed.internal) return;
         const id = parsed.id ?? (agent === "claude" ? path.basename(f.file, ".jsonl") : codexIdFromName(f.file));
         if (!id) return;
         const title = agent === "claude"

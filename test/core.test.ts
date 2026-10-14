@@ -21,10 +21,23 @@ import {
   unpushedCommits,
 } from "../src/core/git.ts";
 import { branchSlug, encodeClaudeProjectDir, isInside, shellQuote, worktreePathFor } from "../src/core/paths.ts";
-import { SessionScanner } from "../src/core/sessions.ts";
+import { SessionScanner, codexInternalSource } from "../src/core/sessions.ts";
 
 const tmp = () => realpath(fs.mkdtempSync(path.join(os.tmpdir(), "wts-test-")));
 const sh = (cwd: string, ...args: string[]) => execFileSync("git", args, { cwd, stdio: "pipe" }).toString();
+
+test("codexInternalSource", () => {
+  assert.equal(codexInternalSource({ source: "cli", thread_source: "user" }), false);
+  assert.equal(codexInternalSource({ source: "vscode" }), false);
+  assert.equal(codexInternalSource({ source: "exec" }), false);
+  assert.equal(codexInternalSource({}), false, "old rollouts without a source are user sessions");
+  assert.equal(codexInternalSource({ source: { subagent: { other: "guardian" } }, thread_source: "guardian_review" }), true);
+  assert.equal(codexInternalSource({ source: { subagent: "review" } }), true);
+  assert.equal(codexInternalSource({ source: { subagent: "compact" } }), true);
+  assert.equal(codexInternalSource({ source: { internal: "memory_consolidation" } }), true);
+  assert.equal(codexInternalSource({ source: "cli", thread_source: "guardian_review" }), true, "thread_source alone is enough");
+  assert.equal(codexInternalSource({ source: "cli", thread_source: "subagent" }), true);
+});
 
 test("paths helpers", () => {
   assert.equal(encodeClaudeProjectDir("/Users/me/repos/my_app.v2"), "-Users-me-repos-my-app-v2");
@@ -179,6 +192,16 @@ test("session scanning: Claude and Codex, incremental", async () => {
     line({ type: "response_item", payload: { type: "message", role: "user", content: [{ type: "input_text", text: "<environment_context>…</environment_context>" }] } }) +
     line({ type: "response_item", payload: { type: "message", role: "user", content: [{ type: "input_text", text: "Fix the flaky ETL test" }] } }));
   fs.writeFileSync(path.join(codexHome, "session_index.jsonl"), line({ id: xid, thread_name: "Review OCR diff" }));
+  // Codex's guardian approval reviewer and spawned subagents write rollouts of their own; they are not sessions.
+  const gid = "01a11fdd-1111-78f0-9d11-0d49f357fb54";
+  fs.writeFileSync(path.join(ddir, `rollout-2026-10-09T15-30-00-${gid}.jsonl`),
+    line({ type: "session_meta", payload: { id: gid, cwd, timestamp: "2026-10-09T09:30:00Z", source: { subagent: { other: "guardian" } }, thread_source: "guardian_review", parent_thread_id: xid } }) +
+    line({ type: "event_msg", payload: { type: "user_message", message: "Guardian review" } }) +
+    line({ type: "response_item", payload: { type: "message", role: "user", content: [{ type: "input_text", text: "Review this approval request" }] } }));
+  const sid = "01a11fdd-2222-78f0-9d11-0d49f357fb55";
+  fs.writeFileSync(path.join(ddir, `rollout-2026-10-09T15-40-00-${sid}.jsonl`),
+    line({ type: "session_meta", payload: { id: sid, cwd, timestamp: "2026-10-09T09:40:00Z", source: { subagent: { thread_spawn: { parent_thread_id: xid, depth: 1 } } }, thread_source: "subagent" } }) +
+    line({ type: "event_msg", payload: { type: "user_message", message: "Explore the crates folder" } }));
 
   const scanner = new SessionScanner({ claudeHome, codexHome, maxAgeDays: 30 });
   let found = await scanner.scan([cwd]);
@@ -194,6 +217,9 @@ test("session scanning: Claude and Codex, incremental", async () => {
   const y = found.find(s => s.id === yid)!;
   assert.equal(y.title, "Fix the flaky ETL test");
   assert.equal(y.turns, 1);
+  assert.equal(found.find(s => s.id === gid), undefined, "guardian review thread is hidden");
+  assert.equal(found.find(s => s.id === sid), undefined, "spawned subagent thread is hidden");
+  assert.equal(found.filter(s => s.agent === "codex").length, 2);
 
   // Appended lines are picked up; an AI title wins over the first prompt.
   fs.appendFileSync(cfile, line({ type: "user", cwd, sessionId: cid, message: { content: "second prompt" } }) + line({ type: "ai-title", aiTitle: "OCR scope setting", sessionId: cid }));
